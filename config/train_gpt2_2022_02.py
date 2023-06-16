@@ -3,13 +3,14 @@
 # $ torchrun --standalone --nproc_per_node=8 train.py config/train_gpt2.py
 
 year = '2022-02'
-
-out_dir = 'scratch-2022-'+year
-dataset = '../10_mil_words/'+year
+#mil_words = '100mil'
+mil_words = '1bil'
+out_dir = mil_words+'-scratch-2022-'+year
+dataset = '../1_bil_words/'+year
 
 wandb_log = True
 wandb_project = 'nanogpt'
-wandb_run_name='gpt2-124M-scratch-'+year
+wandb_run_name=mil_words+'-gpt2-124M-scratch-'+year
 
 # these make the total batch size be ~0.5M
 # 12 batch size * 1024 block size * 5 gradaccum * 8 GPUs = 491,520

@@ -207,6 +207,11 @@ Note that the code by default uses [PyTorch 2.0](https://pytorch.org/get-started
 - Separate out the optim buffers from model params in checkpoints I think
 - Additional logging around network health (e.g. gradient clip events, magnitudes)
 - Few more investigations around better init etc.
+- train 100M reddit
+- stop or half the lr when valid loss increases
+- better management of files e.g. from scratch etc.
+- program thing which will take our evaluation dataset and get logits for each month
+- TODO till next Wednesday
 
 ## troubleshooting
 

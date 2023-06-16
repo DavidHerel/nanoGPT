@@ -5,17 +5,28 @@ import os
 from tqdm import tqdm
 import numpy as np
 import tiktoken
+import argparse
 from datasets import load_dataset # huggingface datasets
+
+parser = argparse.ArgumentParser(description='nanoGPT')
+parser.add_argument('--data', type=str, default='2022-1',
+                    help='location of the data corpus')
+args = parser.parse_args()
 
 # number of workers in .map() call
 # good number to use is ~order number of cpu cores // 2
 num_proc = 8
 
+trainfile = args.data+'/train.txt'
+testfile = args.data+'/test.txt'
 # takes 54GB in huggingface .cache dir, about 8M documents (8,013,769)
-dataset = load_dataset("openwebtext")
+# dataset = load_dataset("openwebtext")
+split_dataset = load_dataset("text", data_files={
+    "train": trainfile,
+    "test": testfile})
 
 # owt by default only contains the 'train' split, so create a test split
-split_dataset = dataset["train"].train_test_split(test_size=0.0005, seed=2357, shuffle=True)
+#split_dataset = dataset["train"].train_test_split(test_size=0.0005, seed=2357, shuffle=True)
 split_dataset['val'] = split_dataset.pop('test') # rename the test split to val
 
 # this results in:
@@ -51,7 +62,7 @@ tokenized = split_dataset.map(
 # concatenate all the ids in each dataset into one large file we can use for training
 for split, dset in tokenized.items():
     arr_len = np.sum(dset['len'])
-    filename = os.path.join(os.path.dirname(__file__), f'{split}.bin')
+    filename = os.path.join(args.data, f'{split}.bin')
     dtype = np.uint16 # (can do since enc.max_token_value == 50256 is < 2**16)
     arr = np.memmap(filename, dtype=dtype, mode='w+', shape=(arr_len,))
     total_batches = 1024
