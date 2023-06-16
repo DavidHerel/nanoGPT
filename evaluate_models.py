@@ -109,9 +109,7 @@ def score_file(filename, models):
                     ppls.append(ppl)
                 avg = np.average(ppls)
                 std = np.std(ppls)
-                rstd = (100*std)/avg
-                print(rstd)
-                exit(1)
+                rstd = std/avg
                 #if rstd <0.25
                 if rstd < 0.25:
                     score_right+=1
