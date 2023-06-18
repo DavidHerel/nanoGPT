@@ -13,10 +13,9 @@ import numpy as np
 import pandas as pd
 
 
-
 init_from = 'resume' # either 'resume' (from an out_dir) or a gpt2 variant (e.g. 'gpt2-xl')
 out_dir = 'out' # ignored if init_from is not 'resume'
-starts_with = "\n " # or "<|endoftext|>" or etc. Can also specify a file, use as: "FILE:prompt.txt"
+starts_with = "<|endoftext|> " # or "<|endoftext|>" or etc. Can also specify a file, use as: "FILE:prompt.txt"
 device = 'cuda' # examples: 'cpu', 'cuda', 'cuda:0', 'cuda:1', etc.
 dtype = 'bfloat16' if torch.cuda.is_bf16_supported() else 'float16' # 'float32' or 'bfloat16' or 'float16'
 # dtype='float16'
@@ -94,11 +93,12 @@ def score_file(filename, models, df):
         stability = row[5]
         # print("stability: "+str(stability))
         peak_months=[]
-        new_row['stability'] = '0'
+        new_row['stability'] = '1'
         new_row['peak_months'] = []
+        new_row['rstd']=0
         if stability=='0':
             peak_months=ast.literal_eval(row[6])
-            new_row['stability'] = '1'
+            new_row['stability'] = '0'
             new_row['peak_months']=peak_months
 
 
@@ -108,6 +108,9 @@ def score_file(filename, models, df):
         # parsing each column of a row
         for col in row[:5]:
             col = col.lower()
+            if len(col)==0:
+                continue
+
             print(col)
             new_row['sentence']=col
             #run models and get a list of ppl for each month
@@ -171,7 +174,7 @@ print("Filenames:")
 print(filenames)
 
 model_names = []
-size_prefix='1bil'
+size_prefix='100mil'
 model_prefix = size_prefix+'-scratch-2022-2022-'
 model_numbers = ["%.2d" % i for i in range(1,13)]
 for model_number in model_numbers:
@@ -202,7 +205,8 @@ all_dict['all']=acc
 print("Final acc is: ")
 print(acc)
 
-# creating a Dataframe object
-df = pd.DataFrame.from_dict(all_dict)
-df.to_csv(size_prefix, index=False)
+with open(size_prefix+'.csv', 'w') as f:  # You will need 'wb' mode in Python 2.x
+    w = csv.DictWriter(f, all_dict.keys())
+    w.writeheader()
+    w.writerow(all_dict)
 
