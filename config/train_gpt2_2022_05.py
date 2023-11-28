@@ -1,9 +1,9 @@
 # config for training GPT-2 (124M) down to very nice loss of ~2.85 on 1 node of 8X A100 40GB
 # launch as the following (e.g. in a screen session) and wait ~5 days:
 # $ torchrun --standalone --nproc_per_node=8 train.py config/train_gpt2.py
-year = '2020-05'
+year = '2019-05'
 mil_words = '3bil'
-out_dir = mil_words+'-scratch-2020-'+year
+out_dir = mil_words+'-scratch-2019-'+year
 dataset = '../3_bil_words/'+year
 
 wandb_log = True

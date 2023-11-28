@@ -2,9 +2,9 @@
 # launch as the following (e.g. in a screen session) and wait ~5 days:
 # $ torchrun --standalone --nproc_per_node=8 train.py config/train_gpt2.py
 
-year = '2020-02'
+year = '2019-02'
 mil_words = '3bil'
-out_dir = mil_words+'-scratch-2020-'+year
+out_dir = mil_words+'-scratch-2019-'+year
 dataset = '../3_bil_words/'+year
 
 wandb_log = True
