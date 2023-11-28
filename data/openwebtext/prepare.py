@@ -17,13 +17,13 @@ args = parser.parse_args()
 # good number to use is ~order number of cpu cores // 2
 num_proc = 8
 
-trainfile = args.data+'/train.txt'
-testfile = args.data+'/test.txt'
+trainfile = args.data+'/new_train.txt'
+testfile = args.data+'/new_new_test.txt'
 # takes 54GB in huggingface .cache dir, about 8M documents (8,013,769)
 # dataset = load_dataset("openwebtext")
 split_dataset = load_dataset("text", data_files={
     "train": trainfile,
-    "test": testfile})
+    "test": testfile}, cache_dir="tmp_cache/")
 
 # owt by default only contains the 'train' split, so create a test split
 #split_dataset = dataset["train"].train_test_split(test_size=0.0005, seed=2357, shuffle=True)
